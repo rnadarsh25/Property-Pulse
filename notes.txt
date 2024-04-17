@@ -1,0 +1,11 @@
+1. create a new project using npx create-next-app@latest and fill the necessary details.
+2. all depeendies are already there which needs to be used.
+3. using npm i react-spinners package to show loader
+4. npm i mongodb mongoose --> to connect to db as you know already ;)
+5. use https://console.cloud.google.com/ to create OAuth using gmail. create new project then craete new credentials and follow the steps.
+6. Using nextAuth to use google provider service. (serach on google nextauth --> providers)
+7. npm i next-auth
+8. create env variables, to craete auth secret use: openssl rand -base64 32
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_URL_INTERNAL=http://localhost:3000
+NEXTAUTH_SECRET=GMehSZFCSJuoPgVaWPkGzGRKT7uNGX+/N0lLBqVR65A=
