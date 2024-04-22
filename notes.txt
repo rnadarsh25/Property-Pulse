@@ -9,3 +9,8 @@
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_URL_INTERNAL=http://localhost:3000
 NEXTAUTH_SECRET=GMehSZFCSJuoPgVaWPkGzGRKT7uNGX+/N0lLBqVR65A=
+
+9. using cloudinary to upload images and fetching it
+10. npm i cloudinary
+11. using react-toastify to display toast notifications;
+12. npm i react-toastify

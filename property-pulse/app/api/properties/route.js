@@ -1,5 +1,7 @@
 import connectDB from '@/config/db';
 import Property from '@/models/Property';
+import { getSessionUser } from '@/utils/getSessionUser';
+import cloudinary from '@/config/cloudinary';
 
 // GET --> /api/properties
 export const GET = async () => {
@@ -15,6 +17,11 @@ export const GET = async () => {
 
 export const POST = async (request) => {
   try {
+    await connectDB();
+
+    const { userId = '' } = await getSessionUser();
+    console.log({ userId });
+    if (!userId) return new Response('Unauthorized User!', { status: 401 });
     const formData = await request.formData();
 
     //for array use getAll else use get
@@ -45,14 +52,46 @@ export const POST = async (request) => {
         email: formData.get('seller_info.email'),
         phone: formData.get('seller_info.phone'),
       },
-      images,
+      owner: userId,
     };
 
-    console.log(propertyData);
+    //upload image(s) to cloudinary
 
-    return new Response(JSON.stringify({ message: 'Success' }), {
-      status: 200,
-    });
+    const imageUploadPromises = [];
+
+    for (const image of images) {
+      const imageBuffer = await image.arrayBuffer();
+      const imageArray = Array.from(new Uint8Array(imageBuffer));
+      const imageData = Buffer.from(imageArray);
+
+      //convert imageData to base64
+      const imageBase64 = imageData.toString('base64');
+
+      // make request to to upload to cloudinary
+      const result = await cloudinary.uploader.upload(
+        `data:image/png;base64,${imageBase64}`,
+        {
+          folder: 'propertypulse',
+        }
+      );
+
+      imageUploadPromises.push(result.secure_url);
+
+      //wait for all image to upload
+      const uploadedImages = await Promise.all(imageUploadPromises);
+      propertyData.images = uploadedImages;
+    }
+
+    const newProperty = new Property(propertyData);
+    await newProperty.save();
+
+    console.log(newProperty);
+    return Response.redirect(
+      `${process.env.NEXTAUTH_URL}/properties/${newProperty._id}`
+    );
+    // return new Response(JSON.stringify({ message: 'Success' }), {
+    //   status: 200,
+    // });
   } catch (error) {
     console.log({ error });
     return new Response('Failed to add new property', { status: 500 });
