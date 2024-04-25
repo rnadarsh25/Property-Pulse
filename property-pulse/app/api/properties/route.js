@@ -20,7 +20,6 @@ export const POST = async (request) => {
     await connectDB();
 
     const { userId = '' } = await getSessionUser();
-    console.log({ userId });
     if (!userId) return new Response('Unauthorized User!', { status: 401 });
     const formData = await request.formData();
 
@@ -85,7 +84,6 @@ export const POST = async (request) => {
     const newProperty = new Property(propertyData);
     await newProperty.save();
 
-    console.log(newProperty);
     return Response.redirect(
       `${process.env.NEXTAUTH_URL}/properties/${newProperty._id}`
     );

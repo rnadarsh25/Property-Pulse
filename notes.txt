@@ -14,3 +14,6 @@ NEXTAUTH_SECRET=GMehSZFCSJuoPgVaWPkGzGRKT7uNGX+/N0lLBqVR65A=
 10. npm i cloudinary
 11. using react-toastify to display toast notifications;
 12. npm i react-toastify
+13. using mapbax and react-map-gl, mapbox-gl, react-geocode pack & google cloud geocoding api key . to implement map feature.
+14. npm i react-map-gl
+15.using react-share package to implement share feature

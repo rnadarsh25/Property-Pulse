@@ -1,0 +1,91 @@
+import { FaBookmark } from 'react-icons/fa';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { toast } from 'react-toastify';
+
+const BookmarkButton = ({ property }) => {
+  const { data: session } = useSession();
+  const userId = session?.user?.id || '';
+
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const handleClick = async () => {
+    if (!userId) {
+      toast.error('You need to sign in to bookmark a property');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/bookmarks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          propertyId: property._id,
+        }),
+      });
+      if (res.status === 200) {
+        const data = await res.json();
+        toast.success(data.message);
+        setIsBookmarked(data.isBookmarked);
+      } else {
+        toast.error('Bookmark failed! Try again');
+      }
+    } catch (error) {
+      console.error({ error });
+      toast.error('Bookmark failed! Try again');
+    }
+  };
+
+  useEffect(() => {
+    const checkBookmarkStatus = async () => {
+      try {
+        const res = await fetch('/api/bookmarks/check', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            propertyId: property._id,
+          }),
+        });
+        if (res.status === 200) {
+          const data = await res.json();
+          setIsBookmarked(data.isBookmarked);
+        } else {
+          toast.error('Check bookmark failed!');
+        }
+      } catch (error) {
+        console.error({ error });
+        toast.error('Check bookmark failed! Try again');
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (property._id && userId) checkBookmarkStatus();
+  }, [property._id, userId]);
+
+  if (loading) return <p>Loading...</p>;
+
+  return isBookmarked ? (
+    <button
+      onClick={handleClick}
+      className='bg-red-500 hover:bg-red-600 text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center'
+    >
+      <FaBookmark className=' mr-2' />
+      Remove Bookmark
+    </button>
+  ) : (
+    <button
+      onClick={handleClick}
+      className='bg-blue-500 hover:bg-blue-600 text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center'
+    >
+      <FaBookmark className=' mr-2' />
+      Bookmark Property
+    </button>
+  );
+};
+
+export default BookmarkButton;

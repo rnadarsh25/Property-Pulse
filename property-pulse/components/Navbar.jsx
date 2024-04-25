@@ -25,8 +25,6 @@ const Navbar = () => {
     setAuthProviders();
   }, []);
 
-  console.log({ session });
-
   return (
     <nav className='bg-blue-700 border-b border-blue-500'>
       <div className='mx-auto max-w-7xl px-2 sm:px-6 lg:px-8'>
@@ -197,7 +195,7 @@ const Navbar = () => {
                       Your Profile
                     </Link>
                     <Link
-                      href='/properties/save'
+                      href='/properties/saved'
                       className='block px-4 py-2 text-sm text-gray-700'
                       role='menuitem'
                       tabIndex='-1'
