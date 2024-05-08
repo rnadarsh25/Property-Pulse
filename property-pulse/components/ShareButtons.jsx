@@ -19,7 +19,7 @@ export const ShareButtons = ({ property }) => {
         <FacebookShareButton
           url={shareUrl}
           quote={property.name}
-          hashtag={`#${property.type}ForRent`}
+          hashtag={`#${property.type.replace(/\s/g, '')}ForRent`}
         >
           <FacebookIcon size={40} round={true} />
         </FacebookShareButton>
@@ -35,10 +35,18 @@ export const ShareButtons = ({ property }) => {
         <WhatsappShareButton
           url={shareUrl}
           title={property.name}
-          hashtags={[`#${property.type}ForRent`]}
+          separator={':: '}
         >
           <WhatsappIcon size={40} round={true} />
         </WhatsappShareButton>
+
+        <EmailShareButton
+          url={shareUrl}
+          title={property.name}
+          body={`Check out this property listing: ${shareUrl}`}
+        >
+          <EmailIcon size={40} round={true} />
+        </EmailShareButton>
       </div>
     </>
   );
